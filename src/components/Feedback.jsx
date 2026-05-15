@@ -52,7 +52,7 @@ export default function Feedback() {
       Object.entries(formData).map(([key, value]) => [key, sanitizeValue(String(value))])
     )
 
-    if (!sanitized.name || !sanitized.email || !sanitized.message || !sanitized.platform) {
+    if (!sanitized.name || !sanitized.email || !sanitized.message || (activeTab !== 'feature' && !sanitized.platform)) {
       setError('The shadows need every required field before this can be sent.')
       return
     }
@@ -73,7 +73,7 @@ export default function Feedback() {
       feedbackType: activeTab === 'bug' ? 'Bug Report' : activeTab === 'feature' ? 'Feature Request' : 'Feedback',
       type: activeTab,
       severity: activeTab === 'bug' ? sanitized.severity : '',
-      platform: sanitized.platform,
+      platform: activeTab !== 'feature' ? sanitized.platform : '',
       suggestion: activeTab === 'feedback' ? sanitized.message : '',
       bugDescription: activeTab === 'bug' ? sanitized.message : '',
       featureRequest: activeTab === 'feature' ? sanitized.message : '',
@@ -188,21 +188,23 @@ export default function Feedback() {
           </div>
         )}
 
-        <div>
-          <label htmlFor="feedback-platform" className="block font-body text-sm text-horror-offwhite/60 mb-2">Platform</label>
-          <select
-            id="feedback-platform"
-            name="platform"
-            required
-            value={formData.platform}
-            onChange={handleChange}
-            className="feedback-field text-horror-offwhite/80"
-          >
-            {platformOptions.map((platform) => (
-              <option key={platform}>{platform}</option>
-            ))}
-          </select>
-        </div>
+        {activeTab !== 'feature' && (
+          <div>
+            <label htmlFor="feedback-platform" className="block font-body text-sm text-horror-offwhite/60 mb-2">Platform</label>
+            <select
+              id="feedback-platform"
+              name="platform"
+              required
+              value={formData.platform}
+              onChange={handleChange}
+              className="feedback-field text-horror-offwhite/80"
+            >
+              {platformOptions.map((platform) => (
+                <option key={platform}>{platform}</option>
+              ))}
+            </select>
+          </div>
+        )}
 
         <div>
           <label htmlFor="feedback-message" className="block font-body text-sm text-horror-offwhite/60 mb-2">

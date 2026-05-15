@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { useInView } from 'framer-motion'
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect, useCallback } from 'react'
 import { FiChevronLeft, FiChevronRight, FiX } from 'react-icons/fi'
 import imgAbandonedCorridor from '../gallery/2.png'
 import imgForgottenRoom from '../gallery/1.png'
@@ -23,6 +23,24 @@ export default function Gallery() {
   const isInView = useInView(ref, { once: true, margin: '-100px' })
   const [selected, setSelected] = useState(null)
   const [hoveredId, setHoveredId] = useState(null)
+
+  const handleKeyDown = useCallback((e) => {
+    if (!selected) return;
+    if (e.key === 'ArrowRight') {
+      const idx = screenshots.findIndex(s => s.id === selected.id)
+      setSelected(screenshots[(idx + 1) % screenshots.length])
+    } else if (e.key === 'ArrowLeft') {
+      const idx = screenshots.findIndex(s => s.id === selected.id)
+      setSelected(screenshots[(idx - 1 + screenshots.length) % screenshots.length])
+    } else if (e.key === 'Escape') {
+      setSelected(null)
+    }
+  }, [selected])
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [handleKeyDown])
 
   return (
     <section id="gallery" className="relative py-20 md:py-32 overflow-hidden" ref={ref}>
