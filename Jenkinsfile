@@ -35,10 +35,9 @@ pipeline {
             steps {
                 script {
 
-
-                    docker.build(
-                        "${REGISTRY}/${PROJECT}/${IMAGE_NAME}:${TAG}"
-                    )
+                    sh '''
+                    docker build -t ${REGISTRY}/${PROJECT}/${IMAGE_NAME}:${TAG} .
+                    '''
                 }
             }
         }
