@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: room404web-service
+spec:
+  selector:
+    app: room404web
+
+
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
