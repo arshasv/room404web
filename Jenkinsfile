@@ -9,12 +9,6 @@ pipeline {
 
     stages {
 
-        stage('Checkout Source') {
-            steps {
-                git 'https://github.com/arshasv/room404web.git'
-            }
-        }
-
         stage('Build Docker Image') {
             steps {
                 sh 'docker build -t $IMAGE_NAME:$IMAGE_TAG .'
