@@ -1,53 +1,58 @@
 pipeline {
 
+    agent {
+        label 'linux'
+    }
 
-    agent any
-
+    options {
+        timestamps()
+        buildDiscarder(logRotator(numToKeepStr: '10'))
+    }
 
     environment {
 
+        REGISTRY_URL = "default-route-openshift-image-registry.apps.okd.example.com"
 
-        PROJECT = "room404web"
-
+        NAMESPACE = "room404web"
 
         IMAGE_NAME = "room404web"
 
-
-        REGISTRY = "image-registry.openshift-image-registry.svc:5000"
-
+        OKD_PROJECT = "room404web"
 
         TAG = "${BUILD_NUMBER}"
-    }
 
+        OKD_API = "https://api.okd-cluster-url:6443"
+    }
 
     stages {
 
+        stage('Validate Tools') {
 
-        stage('Checkout Source') {
             steps {
-                git branch: 'main',
-                url: 'https://github.com/arshasv/room404web.git'
+
+                sh '''
+                echo "Checking tools..."
+
+                docker --version
+                oc version --client
+                '''
             }
         }
-
 
         stage('Build Docker Image') {
-            steps {
-                script {
 
-                    sh '''
-                    docker build -t ${REGISTRY}/${PROJECT}/${IMAGE_NAME}:${TAG} .
-                    '''
-                }
+            steps {
+
+                sh '''
+                docker build -t \
+                ${REGISTRY_URL}/${NAMESPACE}/${IMAGE_NAME}:${TAG} .
+                '''
             }
         }
-
 
         stage('Registry Login') {
 
-
             steps {
-
 
                 withCredentials([
                     usernamePassword(
@@ -57,43 +62,37 @@ pipeline {
                     )
                 ]) {
 
-
                     sh '''
-                    docker login ${REGISTRY} \
+                    echo $PASSWORD | docker login \
+                    ${REGISTRY_URL} \
                     -u $USERNAME \
-                    -p $PASSWORD
+                    --password-stdin
                     '''
                 }
             }
         }
 
-
         stage('Push Docker Image') {
-
 
             steps {
 
-
                 sh '''
-                docker push ${REGISTRY}/${PROJECT}/${IMAGE_NAME}:${TAG}
-
+                docker push \
+                ${REGISTRY_URL}/${NAMESPACE}/${IMAGE_NAME}:${TAG}
 
                 docker tag \
-                ${REGISTRY}/${PROJECT}/${IMAGE_NAME}:${TAG} \
-                ${REGISTRY}/${PROJECT}/${IMAGE_NAME}:latest
+                ${REGISTRY_URL}/${NAMESPACE}/${IMAGE_NAME}:${TAG} \
+                ${REGISTRY_URL}/${NAMESPACE}/${IMAGE_NAME}:latest
 
-
-                docker push ${REGISTRY}/${PROJECT}/${IMAGE_NAME}:latest
+                docker push \
+                ${REGISTRY_URL}/${NAMESPACE}/${IMAGE_NAME}:latest
                 '''
             }
         }
 
-
         stage('Deploy to OKD') {
 
-
             steps {
-
 
                 withCredentials([
                     string(
@@ -102,53 +101,60 @@ pipeline {
                     )
                 ]) {
 
-
                     sh '''
                     oc login \
                     --token=$TOKEN \
-                    --server=https://api.okd-cluster-url:6443 \
+                    --server=${OKD_API} \
                     --insecure-skip-tls-verify=true
 
-
-                    oc project room404web
-
+                    oc project ${OKD_PROJECT}
 
                     oc set image deployment/room404web \
-                    room404web=${REGISTRY}/${PROJECT}/${IMAGE_NAME}:${TAG}
+                    room404web=${REGISTRY_URL}/${NAMESPACE}/${IMAGE_NAME}:${TAG}
 
+                    oc rollout restart deployment/room404web
 
-                    oc rollout status deployment/room404web
+                    oc rollout status deployment/room404web \
+                    --timeout=300s
                     '''
                 }
             }
         }
 
-
         stage('Deployment Verification') {
-
 
             steps {
 
-
                 sh '''
                 oc get pods
-                oc get deployments
+
+                oc get deployment
+
                 oc rollout history deployment/room404web
                 '''
             }
         }
     }
 
-
     post {
 
+        always {
+
+            sh '''
+            docker system prune -f || true
+            docker image prune -f || true
+            '''
+
+            cleanWs()
+        }
 
         success {
+
             echo 'Deployment Successful'
         }
 
-
         failure {
+
             echo 'Deployment Failed'
         }
     }
