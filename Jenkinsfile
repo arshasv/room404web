@@ -8,13 +8,6 @@ pipeline {
 
     stages {
 
-        stage('Source Checkout') {
-            steps {
-                git branch: 'main',
-                git 'https://github.com/arshasv/room404web.git'
-            }
-        }
-
         stage('Docker Build') {
             steps {
                 sh '''
