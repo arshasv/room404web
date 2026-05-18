@@ -11,7 +11,7 @@ pipeline {
         stage('Docker Build') {
             steps {
                 sh '''
-                docker build -t $REGISTRY_URL/$NAMESPACE/$IMAGE_NAME:$TAG .
+                docker build -t $REGISTRY_URL/$IMAGE_NAME:$TAG .
                 '''
             }
         }
@@ -35,7 +35,7 @@ pipeline {
         stage('Push Image') {
             steps {
                 sh '''
-                docker push $REGISTRY_URL/$NAMESPACE/$IMAGE_NAME:$TAG
+                docker push $REGISTRY_URL/$IMAGE_NAME:$TAG
                 '''
             }
         }
@@ -56,7 +56,7 @@ pipeline {
                     oc project $OKD_PROJECT
 
                     oc set image deployment/room404web \
-                    room404web=$REGISTRY_URL/$NAMESPACE/$IMAGE_NAME:$TAG
+                    room404web=$REGISTRY_URL/$IMAGE_NAME:$TAG
 
                     oc rollout restart deployment/room404web
 
