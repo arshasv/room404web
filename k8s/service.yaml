@@ -5,9 +5,7 @@ metadata:
 spec:
   selector:
     app: room404web
-
-
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 80
+      targetPort: 3000

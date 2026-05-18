@@ -1,30 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
-
 metadata:
   name: room404web
-
 spec:
   replicas: 1
-
   selector:
     matchLabels:
       app: room404web
-
   template:
-
     metadata:
       labels:
         app: room404web
-
     spec:
-
       containers:
       - name: room404web
-
-        image: default-route-openshift-image-registry.apps.okd.example.com/room404web/room404web:latest
-
-        imagePullPolicy: Always
-
+        image: image-registry.openshift-image-registry.svc:5000/room404/room404web:latest
         ports:
-        - containerPort: 80
+        - containerPort: 3000
