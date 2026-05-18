@@ -2,8 +2,18 @@ pipeline {
     agent any
 
     environment {
+
         IMAGE_NAME = "room404web"
+
         TAG = "${BUILD_NUMBER}"
+
+        OKD_PROJECT = "room404web"
+
+        OKD_API = "https://api.crc.testing:6443"
+
+        REGISTRY_URL = "default-route-openshift-image-registry.apps-crc.testing"
+
+        OKD_TOKEN_CREDENTIALS_ID = "okd-token"
     }
 
     stages {
@@ -11,22 +21,24 @@ pipeline {
         stage('Docker Build') {
             steps {
                 sh '''
-                docker build -t $REGISTRY_URL/$IMAGE_NAME:$TAG .
+                docker build -t $REGISTRY_URL/$OKD_PROJECT/$IMAGE_NAME:$TAG .
                 '''
             }
         }
 
         stage('Registry Login') {
             steps {
+
                 withCredentials([
-                    usernamePassword(
-                        credentialsId: "${NEXUS_CREDENTIALS_ID}",
-                        usernameVariable: 'REG_USER',
-                        passwordVariable: 'REG_PASS'
+                    string(
+                        credentialsId: "${OKD_TOKEN_CREDENTIALS_ID}",
+                        variable: 'OKD_TOKEN'
                     )
                 ]) {
+
                     sh '''
-                    echo $REG_PASS | docker login $REGISTRY_URL -u $REG_USER --password-stdin
+                    echo $OKD_TOKEN | docker login $REGISTRY_URL \
+                    -u developer --password-stdin
                     '''
                 }
             }
@@ -35,7 +47,7 @@ pipeline {
         stage('Push Image') {
             steps {
                 sh '''
-                docker push $REGISTRY_URL/$IMAGE_NAME:$TAG
+                docker push $REGISTRY_URL/$OKD_PROJECT/$IMAGE_NAME:$TAG
                 '''
             }
         }
@@ -51,12 +63,15 @@ pipeline {
                 ]) {
 
                     sh '''
-                    oc login --token=$OKD_TOKEN --server=$OKD_API --insecure-skip-tls-verify=true
+                    oc login \
+                    --token=$OKD_TOKEN \
+                    --server=$OKD_API \
+                    --insecure-skip-tls-verify=true
 
                     oc project $OKD_PROJECT
 
                     oc set image deployment/room404web \
-                    room404web=$REGISTRY_URL/$IMAGE_NAME:$TAG
+                    room404web=$REGISTRY_URL/$OKD_PROJECT/$IMAGE_NAME:$TAG
 
                     oc rollout restart deployment/room404web
 
@@ -69,15 +84,16 @@ pipeline {
         stage('Deployment Verification') {
             steps {
                 sh '''
-                oc get pods
-                oc get svc
-                oc get route
+                oc get pods -n $OKD_PROJECT
+                oc get svc -n $OKD_PROJECT
+                oc get route -n $OKD_PROJECT
                 '''
             }
         }
     }
 
     post {
+
         success {
             echo 'Deployment Successful!'
         }
