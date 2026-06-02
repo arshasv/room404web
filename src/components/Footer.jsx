@@ -7,14 +7,14 @@ export default function Footer() {
     <footer className="relative border-t border-blood/10 bg-horror-black">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+          <p className="font-body text-xs text-horror-offwhite/20 tracking-wider hidden md:block">
+            SOME DOORS WERE NEVER MEANT TO BE OPENED
+          </p>
+
           <div className="flex items-center gap-2">
             <span className="font-horror text-xl text-horror-bone">ROOM</span>
             <span className="font-horror text-2xl text-blood">404</span>
           </div>
-
-          <p className="font-body text-xs text-horror-offwhite/20 tracking-wider">
-            SOME DOORS WERE NEVER MEANT TO BE OPENED
-          </p>
 
           <p className="font-body text-xs text-horror-offwhite/20">
             &copy; {year} Room 404. All rights reserved.

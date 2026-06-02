@@ -2,6 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --paper-bg: #E8D8B5;
+  --paper-bg-alt: #DCC7A1;
+  --ink-color: #3B2A1A;
+  --accent-blood: #7A1212;
+  --shadow-dark: #2B2B2B;
+  --nostalgic-glow: #F5D67A;
+  --shadow-warm: rgba(59, 42, 26, 0.2);
+}
+
 @layer base {
   * {
     margin: 0;
@@ -256,6 +266,80 @@
     94% { opacity: 0.6; transform: translate(4px, -2px); }
     96% { opacity: 0.4; transform: translate(-2px, 4px); }
     98% { opacity: 0.7; transform: translate(2px, -4px); }
+  }
+
+  /* 3D Flipbook Core Styles */
+  .book-container {
+    perspective: 3000px;
+    transform-style: preserve-3d;
+  }
+
+  .paper-surface {
+    background-color: #DCC7A1;
+    background-image: url('/page.png');
+    background-size: cover;
+    background-position: center;
+    box-shadow: inset 0 0 100px rgba(0,0,0,0.1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .book-spine {
+    width: 25px;
+    height: 100%;
+    background: linear-gradient(
+      to right,
+      #1a1510 0%,
+      #3B2A1A 20%,
+      #4a3a2a 50%,
+      #3B2A1A 80%,
+      #1a1510 100%
+    );
+    box-shadow: 
+      inset 0 0 15px rgba(0,0,0,0.6),
+      0 0 20px rgba(0,0,0,0.4);
+    z-index: 50;
+    position: relative;
+  }
+
+  .page-shadow-right {
+    background: linear-gradient(to right, rgba(0,0,0,0.4) 0%, transparent 15%, transparent 100%);
+  }
+
+  .page-shadow-left {
+    background: linear-gradient(to left, rgba(0,0,0,0.4) 0%, transparent 15%, transparent 100%);
+  }
+
+  .antique-glow {
+    box-shadow: 0 40px 100px -20px rgba(0,0,0,0.6), 0 0 40px rgba(245, 214, 122, 0.05);
+  }
+
+  .vignette-outer {
+    background: radial-gradient(circle at center, transparent 30%, rgba(0,0,0,0.7) 100%);
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    z-index: 5;
+  }
+
+  .typewriter-text {
+    font-family: 'Special Elite', monospace;
+    color: #3B2A1A;
+    line-height: 1.6;
+  }
+
+  .blood-heading {
+    color: #7A1212;
+    font-family: 'Special Elite', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.1);
+  }
+
+  .book-shadow {
+    box-shadow: 
+      0 10px 30px -10px rgba(0,0,0,0.7),
+      0 40px 100px -20px rgba(0,0,0,0.5);
   }
 }
 

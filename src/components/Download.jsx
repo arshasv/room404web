@@ -10,7 +10,7 @@ const platforms = [
     name: 'Windows',
     icon: FaWindows,
     version: 'v1.0.0',
-    size: '1.9 GB',
+    size: '2.1 GB',
     requirements: [
       'OS: Windows 10/11 (64-bit)',
       'CPU: Intel i5-8400 / AMD Ryzen 5 2600',
@@ -27,7 +27,7 @@ const platforms = [
     name: 'Ubuntu / Linux',
     icon: FaUbuntu,
     version: 'v1.0.0',
-    size: '1.9 GB',
+    size: '2.1 GB',
     requirements: [
       'OS: Ubuntu 22.04+ / Linux (x86_64)',
       'CPU: Intel i5-8400 / AMD Ryzen 5 2600',

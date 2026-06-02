@@ -5,6 +5,7 @@ import { HiMenu, HiX } from 'react-icons/hi'
 const navLinks = [
   { label: 'Home', href: '#hero' },
   { label: 'About', href: '#about' },
+  { label: 'Story World', href: '#story-world' },
   { label: 'Features', href: '#features' },
   { label: 'Download', href: '#download' },
   { label: 'Gallery', href: '#gallery' },

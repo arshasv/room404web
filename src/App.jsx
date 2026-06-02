@@ -1,4 +1,4 @@
-import { Component } from 'react'
+import { Component, useState, useEffect } from 'react'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import About from './components/About'
@@ -7,6 +7,8 @@ import Download from './components/Download'
 import Gallery from './components/Gallery'
 import Feedback from './components/Feedback'
 import Footer from './components/Footer'
+import NovelReader from './components/NovelReader'
+import StoryWorld from './components/StoryWorld'
 
 class ErrorBoundary extends Component {
   constructor(props) {
@@ -43,13 +45,30 @@ class ErrorBoundary extends Component {
 }
 
 export default function App() {
+  const [showReader, setShowReader] = useState(() => window.location.hash === '#reader')
+
+  useEffect(() => {
+    const checkHash = () => setShowReader(window.location.hash === '#reader')
+    window.addEventListener('hashchange', checkHash)
+    return () => window.removeEventListener('hashchange', checkHash)
+  }, [])
+
+  const handleCloseReader = () => {
+    setShowReader(false)
+    if (window.location.hash === '#reader') {
+      window.history.replaceState(null, '', window.location.pathname)
+    }
+  }
+
   return (
     <ErrorBoundary>
+      {showReader && <NovelReader onClose={handleCloseReader} />}
       <div className="relative min-h-screen bg-horror-black text-horror-offwhite">
         <div className="relative z-10">
           <Navbar />
           <Hero />
           <About />
+          <StoryWorld />
           <Features />
           <Download />
           <Gallery />
