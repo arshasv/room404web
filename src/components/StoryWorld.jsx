@@ -17,7 +17,7 @@ const storyAssets = [
     image: '/storyworld/storyline.png',
     cta: 'Watch Storyline',
     delay: 0.2,
-    href: '#story-world'
+    href: 'https://youtu.be/byrbtAzBaTs'
   },
   {
     title: 'Comic',
@@ -96,8 +96,8 @@ export default function StoryWorld() {
 
                 <a
                   href={asset.href}
-                  target={asset.title === 'Comic' || asset.title === 'Novel' ? '_blank' : undefined}
-                  rel={asset.title === 'Comic' || asset.title === 'Novel' ? 'noopener noreferrer' : undefined}
+                  target={asset.title === 'Comic' || asset.title === 'Novel' || asset.title === 'Storyline Video' ? '_blank' : undefined}
+                  rel={asset.title === 'Comic' || asset.title === 'Novel' || asset.title === 'Storyline Video' ? 'noopener noreferrer' : undefined}
                   className="btn-secondary text-base py-3 w-full group-hover:bg-blood/10 transition-all flex items-center justify-center gap-2"
                 >
                   <span className="relative z-10 flex items-center justify-center gap-2">
