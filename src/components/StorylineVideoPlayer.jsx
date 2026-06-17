@@ -4,7 +4,6 @@ import { useEffect } from 'react'
 
 export default function StorylineVideoPlayer({ onClose }) {
   const youtubeUrl = 'https://youtu.be/byrbtAzBaTs'
-  const videoUrl = '/video/Room%20404%20Final%20cut.mp4'
 
   // Handle escape key
   useEffect(() => {
@@ -59,10 +58,8 @@ export default function StorylineVideoPlayer({ onClose }) {
 
       {/* Atmospheric text at bottom */}
       <div className="fixed bottom-12 left-12 z-20 pointer-events-none opacity-20">
-        <div className="font-horror text-2xl text-blood flex items-center gap-4">
-          <span>ROOM</span>
-          <span className="w-12 h-px bg-blood/40" />
-          <span>404</span>
+        <div className="font-horror text-2xl text-blood">
+          ROOM404
         </div>
         <div className="text-[9px] uppercase tracking-[0.5em] text-horror-bone/40 mt-2 font-['Inter']">Official Storyline Video</div>
       </div>
