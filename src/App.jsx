@@ -9,6 +9,7 @@ import Feedback from './components/Feedback'
 import Footer from './components/Footer'
 import NovelReader from './components/NovelReader'
 import StoryWorld from './components/StoryWorld'
+import StorylineVideoPlayer from './components/StorylineVideoPlayer'
 
 class ErrorBoundary extends Component {
   constructor(props) {
@@ -46,9 +47,13 @@ class ErrorBoundary extends Component {
 
 export default function App() {
   const [showReader, setShowReader] = useState(() => window.location.hash === '#reader')
+  const [showVideo, setShowVideo] = useState(() => window.location.hash === '#video')
 
   useEffect(() => {
-    const checkHash = () => setShowReader(window.location.hash === '#reader')
+    const checkHash = () => {
+      setShowReader(window.location.hash === '#reader')
+      setShowVideo(window.location.hash === '#video')
+    }
     window.addEventListener('hashchange', checkHash)
     return () => window.removeEventListener('hashchange', checkHash)
   }, [])
@@ -60,9 +65,17 @@ export default function App() {
     }
   }
 
+  const handleCloseVideo = () => {
+    setShowVideo(false)
+    if (window.location.hash === '#video') {
+      window.history.replaceState(null, '', window.location.pathname)
+    }
+  }
+
   return (
     <ErrorBoundary>
       {showReader && <NovelReader onClose={handleCloseReader} />}
+      {showVideo && <StorylineVideoPlayer onClose={handleCloseVideo} />}
       <div className="relative min-h-screen bg-horror-black text-horror-offwhite">
         <div className="relative z-10">
           <Navbar />
