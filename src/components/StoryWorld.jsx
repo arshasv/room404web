@@ -9,7 +9,7 @@ const storyAssets = [
     image: '/storyworld/trailer.png',
     cta: 'Watch Trailer',
     delay: 0.1,
-    href: '#story-world'
+    href: '#trailer'
   },
   {
     title: 'Storyline Video',

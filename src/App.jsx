@@ -47,12 +47,12 @@ class ErrorBoundary extends Component {
 
 export default function App() {
   const [showReader, setShowReader] = useState(() => window.location.hash === '#reader')
-  const [showVideo, setShowVideo] = useState(() => window.location.hash === '#video')
+  const [activeVideo, setActiveVideo] = useState(() => getActiveVideo(window.location.hash))
 
   useEffect(() => {
     const checkHash = () => {
       setShowReader(window.location.hash === '#reader')
-      setShowVideo(window.location.hash === '#video')
+      setActiveVideo(getActiveVideo(window.location.hash))
     }
     window.addEventListener('hashchange', checkHash)
     return () => window.removeEventListener('hashchange', checkHash)
@@ -66,8 +66,8 @@ export default function App() {
   }
 
   const handleCloseVideo = () => {
-    setShowVideo(false)
-    if (window.location.hash === '#video') {
+    setActiveVideo(null)
+    if (window.location.hash === '#video' || window.location.hash === '#trailer') {
       window.history.replaceState(null, '', window.location.pathname)
     }
   }
@@ -75,7 +75,14 @@ export default function App() {
   return (
     <ErrorBoundary>
       {showReader && <NovelReader onClose={handleCloseReader} />}
-      {showVideo && <StorylineVideoPlayer onClose={handleCloseVideo} />}
+      {activeVideo && (
+        <StorylineVideoPlayer
+          onClose={handleCloseVideo}
+          videoId={activeVideo.videoId}
+          title={activeVideo.title}
+          label={activeVideo.label}
+        />
+      )}
       <div className="relative min-h-screen bg-horror-black text-horror-offwhite">
         <div className="relative z-10">
           <Navbar />
@@ -91,4 +98,24 @@ export default function App() {
       </div>
     </ErrorBoundary>
   )
+}
+
+function getActiveVideo(hash) {
+  if (hash === '#trailer') {
+    return {
+      videoId: 'KePtFC3sWvk',
+      title: 'Room 404 Trailer Video',
+      label: 'Official Trailer Video'
+    }
+  }
+
+  if (hash === '#video') {
+    return {
+      videoId: 'byrbtAzBaTs',
+      title: 'Room 404 Storyline Video',
+      label: 'Official Storyline Video'
+    }
+  }
+
+  return null
 }
